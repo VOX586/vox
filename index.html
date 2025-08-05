@@ -535,6 +535,37 @@
             transform: rotate(-45deg);
         }
         
+        .hamburger-button {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .hamburger-button span {
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-color);
+            border-radius: 2px;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .hamburger-button.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+        .hamburger-button.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-button.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
         /* 响应式设计 */
         @media (max-width: 1024px) {
             .hero {
@@ -551,6 +582,58 @@
         }
         
         @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                background-color: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                padding: 20px 0;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                gap: 0;
+                animation: slideDown 0.3s ease-in-out;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 15px 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links a::after {
+                display: none;
+            }
+
+            .language-switcher {
+                margin-left: 0;
+                margin-top: 15px;
+                justify-content: center;
+            }
+
+            .hamburger-button {
+                display: flex;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
             .hero {
                 padding: 80px 0 120px;
             }
@@ -565,10 +648,6 @@
             
             .section-title {
                 font-size: 40px;
-            }
-            
-            .nav-links {
-                gap: 20px;
             }
         }
         
@@ -620,6 +699,8 @@
         <nav>
             <a href="#" class="nav-logo">
                 <img src="logo.svg" alt="VOX Logo" style="width: 38px; height: 38px;"/>
+                <span data-lang="zh">VOX</span>
+                <span data-lang="en" style="display:none">VOX</span>
             </a>
             <div class="nav-links">
                 <a href="#" data-lang="zh">作品</a>
@@ -637,6 +718,11 @@
                     <button data-lang="en">EN</button>
                 </div>
             </div>
+            <button class="hamburger-button" aria-label="Open Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </nav>
     </header>
 
@@ -1063,6 +1149,14 @@
             const portfolioGrid = document.querySelector('#portfolio-grid');
             if (servicesGrid) observer.observe(servicesGrid);
             if (portfolioGrid) observer.observe(portfolioGrid);
+
+            const hamburger = document.querySelector('.hamburger-button');
+            const navLinks = document.querySelector('.nav-links');
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
         });
     </script>
 </body>
