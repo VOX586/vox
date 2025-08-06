@@ -1,17 +1,23 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#ffffff">
     <title>VOX | 创意设计工作室</title>
     <style>
         :root {
-            --bg-color: #f5f5f7;
+            --bg-color: #ffffff;
             --text-color: #1d1d1f;
             --accent-color: #0071e3;
-            --light-gray: #d2d2d7;
+            --light-gray: #f5f5f7;
             --white: #ffffff;
-            --animation-duration: 0.5s;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --animation-duration: 0.3s;
         }
         
         * {
@@ -26,7 +32,7 @@
         }
         
         body {
-            background-color: var(--bg-color);
+            background-color: var(--white);
             color: var(--text-color);
             line-height: 1.5;
             font-weight: 400;
@@ -58,7 +64,9 @@
             top: 0;
             z-index: 100;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            transition: all var(--animation-duration) ease;
+            transition: all var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateZ(0);
+            will-change: transform;
         }
         
         header.scrolled {
@@ -539,64 +547,79 @@
             display: none;
             flex-direction: column;
             justify-content: space-around;
-            width: 30px;
+            width: 24px;
             height: 24px;
             background: transparent;
             border: none;
             cursor: pointer;
-            padding: 0;
-            z-index: 10;
+            padding: 4px;
+            margin-right: -4px;
+            position: relative;
+            z-index: 1000;
         }
 
         .hamburger-button span {
-            width: 100%;
-            height: 3px;
+            display: block;
+            width: 24px;
+            height: 2px;
             background-color: var(--text-color);
-            border-radius: 2px;
-            transition: all 0.3s ease-in-out;
+            border-radius: 4px;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .hamburger-button span:nth-child(1) {
+            top: 6px;
+        }
+
+        .hamburger-button span:nth-child(2) {
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hamburger-button span:nth-child(3) {
+            bottom: 6px;
         }
         
         .hamburger-button.active span:nth-child(1) {
-            transform: rotate(45deg) translate(7px, 7px);
+            top: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
         }
+
         .hamburger-button.active span:nth-child(2) {
             opacity: 0;
         }
+
         .hamburger-button.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
+            top: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
         }
 
-        /* 响应式设计 */
-        @media (max-width: 1024px) {
-            .hero {
-                padding: 100px 0 140px;
-            }
-            
-            .hero h1 {
-                font-size: 56px;
-            }
-            
-            .section {
-                padding: 80px 0;
-            }
-        }
-        
+        /* 移动端适配 */
         @media (max-width: 768px) {
+            /* 导航栏适配 */
             .nav-links {
                 display: none;
-                position: absolute;
-                top: 80px;
+                position: fixed;
+                top: 60px;
                 left: 0;
                 width: 100%;
+                height: calc(100vh - 60px);
                 flex-direction: column;
-                align-items: center;
-                background-color: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                padding: 20px 0;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-                gap: 0;
-                animation: slideDown 0.3s ease-in-out;
+                background: #fff;
+                padding: 0;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+            
+            .nav-links.active {
+                display: flex;
+                opacity: 1;
+                visibility: visible;
             }
 
             .nav-links.active {
@@ -604,9 +627,10 @@
             }
 
             .nav-links a {
-                padding: 15px 0;
+                padding: 16px 24px;
                 width: 100%;
-                text-align: center;
+                text-align: left;
+                border-bottom: 1px solid #f5f5f7;
             }
 
             .nav-links a::after {
@@ -614,82 +638,100 @@
             }
 
             .language-switcher {
-                margin-left: 0;
-                margin-top: 15px;
-                justify-content: center;
+                margin: 16px 24px;
+                justify-content: flex-start;
             }
 
             .hamburger-button {
                 display: flex;
             }
 
-            @keyframes slideDown {
-                from {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+            /* 内容区适配 */
+            .hero {
+                padding: 40px 0 60px;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+                margin-bottom: 16px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+                margin-bottom: 32px;
             }
 
-            .hero {
-                padding: 80px 0 120px;
+            .section {
+                padding: 40px 0;
             }
-            
-            .hero h1 {
-                font-size: 48px;
-            }
-            
-            .hero p {
-                font-size: 24px;
-            }
-            
+
             .section-title {
-                font-size: 40px;
+                font-size: 28px;
+                margin-bottom: 32px;
             }
-        }
-        
-        @media (max-width: 640px) {
-            .hero h1 {
-                font-size: 40px;
+
+            /* 卡片适配 */
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
             }
-            
-            .hero p {
-                font-size: 20px;
+
+            .card {
+                margin: 0 16px;
             }
-            
-            .section-title {
-                font-size: 32px;
+
+            .card-image {
+                height: 200px;
             }
-            
+
+            /* 按钮和交互元素适配 */
             .cta-button {
-                padding: 14px 28px;
+                width: calc(100% - 32px);
+                margin: 0 16px;
+                padding: 16px;
                 font-size: 16px;
+                justify-content: center;
             }
-            
-            .card-content {
-                padding: 24px;
-            }
-            
-            .footer-links {
-                gap: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 36px;
-            }
-            
-            .nav-logo span {
-                display: none;
-            }
-            
+
+            /* 底部导航适配 */
             .footer-links {
                 flex-direction: column;
                 gap: 16px;
+                margin-bottom: 32px;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        /* 小屏幕进一步优化 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0;
+            }
+
+            .nav-logo span {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+                padding: 0 24px;
+            }
+
+            .hero p {
+                font-size: 16px;
+                padding: 0 24px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .card {
+                margin: 0 12px;
+                border-radius: 12px;
             }
         }
     </style>
@@ -996,19 +1038,18 @@
                 </div>
                 <div class="social-links">
                     <a href="#" title="微信">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M770.4 335.2c12.8 0 25.2 0.6 37.6 2.2C774.8 180.6 606.6 64 415.4 64 201 64 26 209.6 26 394.8c0 106.8 58.6 195 155.8 263.2l-38.6 117.2 136-68.2c48.8 9.6 87.6 19.4 136.4 19.4 12.4 0 24.2-0.6 36.6-1.6-8-25.8-12.4-53.2-12.4-81.6-0.2-169.8 145.8-308 330.6-308z m-209-105.8c29 0 48.4 19.4 48.4 48.8 0 29-19.4 48.4-48.4 48.4-29.6 0-58.6-19.4-58.6-48.4 0.2-29.4 29.2-48.8 58.6-48.8z m-272.8 97.2c-29 0-58.6-19.4-58.6-48.4 0-29.6 29.6-48.8 58.6-48.8 29.6 0 48.8 19.4 48.8 48.8 0 29.2-19.2 48.4-48.8 48.4zM1126 638.8c0-155.8-155.8-282.6-330.8-282.6-185.4 0-330.8 126.8-330.8 282.6S610 921.4 795.2 921.4c38.6 0 77.8-10.2 117.2-19.8l106.8 58.6-29.6-97.2C1068 804.2 1126 726.4 1126 638.8z m-438.2-49c-19.4 0-38.6-19.4-38.6-39.2 0-19.4 19.4-38.6 38.6-38.6 29.6 0 48.8 19.4 48.8 38.6 0 20-19.4 39.2-48.8 39.2z m214.2 0c-19.4 0-38.6-19.4-38.6-39.2 0-19.4 19.4-38.6 38.6-38.6 29 0 48.8 19.4 48.8 38.6 0.2 20-19.8 39.2-48.8 39.2z" p-id="670" data-spm-anchor-id="a313x.manage_type_mylikes.0.i0.56a53a81Wqz1II"></path>
+                        <svg t="1754475666024" class="icon" viewBox="0 0 1152 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1140" width="200" height="200">
+                            <path d="M770.4 335.2c12.8 0 25.2 0.6 37.6 2.2C774.8 180.6 606.6 64 415.4 64 201 64 26 209.6 26 394.8c0 106.8 58.6 195 155.8 263.2l-38.6 117.2 136-68.2c48.8 9.6 87.6 19.4 136.4 19.4 12.4 0 24.2-0.6 36.6-1.6-8-25.8-12.4-53.2-12.4-81.6-0.2-169.8 145.8-308 330.6-308z m-209-105.8c29 0 48.4 19.4 48.4 48.8 0 29-19.4 48.4-48.4 48.4-29.6 0-58.6-19.4-58.6-48.4 0.2-29.4 29.2-48.8 58.6-48.8z m-272.8 97.2c-29 0-58.6-19.4-58.6-48.4 0-29.6 29.6-48.8 58.6-48.8 29.6 0 48.8 19.4 48.8 48.8 0 29.2-19.2 48.4-48.8 48.4zM1126 638.8c0-155.8-155.8-282.6-330.8-282.6-185.4 0-330.8 126.8-330.8 282.6S610 921.4 795.2 921.4c38.6 0 77.8-10.2 117.2-19.8l106.8 58.6-29.6-97.2C1068 804.2 1126 726.4 1126 638.8z m-438.2-49c-19.4 0-38.6-19.4-38.6-39.2 0-19.4 19.4-38.6 38.6-38.6 29.6 0 48.8 19.4 48.8 38.6 0 20-19.4 39.2-48.8 39.2z m214.2 0c-19.4 0-38.6-19.4-38.6-39.2 0-19.4 19.4-38.6 38.6-38.6 29 0 48.8 19.4 48.8 38.6 0.2 20-19.8 39.2-48.8 39.2z" p-id="1141"></path>
+                        </svg>
                     </a>
                     <a href="#" title="QQ">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M931.507451 840.8889c-23.05197 2.785996-89.719883-105.481862-89.719883-105.481862 0 62.689918-32.271958 144.493811-102.101866 203.571733 33.683956 10.383986 109.685856 38.33395 91.60588 68.84191-14.631981 24.685968-251.019672 15.761979-319.263582 8.07399-68.243911 7.68799-304.631601 16.611978-319.263582-8.07399-18.089976-30.49996 57.835924-58.427924 91.56588-68.82991-69.839909-59.077923-102.117866-140.889816-102.117866-203.583733 0 0-66.667913 108.267858-89.717883 105.481862-10.739986-1.299998-24.847967-59.287922 18.693975-199.407739 20.521973-66.047914 43.989942-120.955842 80.287895-211.557724C185.366427 196.125743 281.964301 0.012 512 0c227.473702 0.012 326.311573 192.265748 320.527581 429.925437 36.235953 90.445882 59.823922 145.699809 80.287894 211.555724 43.535943 140.119817 29.431961 198.105741 18.691976 199.407739z" p-id="984">
-                                
-                            </path>
+                        <svg t="1754475703069" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1454" width="200" height="200">
+                            <path d="M931.507451 840.8889c-23.05197 2.785996-89.719883-105.481862-89.719883-105.481862 0 62.689918-32.271958 144.493811-102.101866 203.571733 33.683956 10.383986 109.685856 38.33395 91.60588 68.84191-14.631981 24.685968-251.019672 15.761979-319.263582 8.07399-68.243911 7.68799-304.631601 16.611978-319.263582-8.07399-18.089976-30.49996 57.835924-58.427924 91.56588-68.82991-69.839909-59.077923-102.117866-140.889816-102.117866-203.583733 0 0-66.667913 108.267858-89.717883 105.481862-10.739986-1.299998-24.847967-59.287922 18.693975-199.407739 20.521973-66.047914 43.989942-120.955842 80.287895-211.557724C185.366427 196.125743 281.964301 0.012 512 0c227.473702 0.012 326.311573 192.265748 320.527581 429.925437 36.235953 90.445882 59.823922 145.699809 80.287894 211.555724 43.535943 140.119817 29.431961 198.105741 18.691976 199.407739z" p-id="1455"></path>
                         </svg>
                     </a>
                     <a href="https://www.douyin.com/user/MS4wLjABAAAA5ez1-YPwAoeH31u5Yd6j0-oXA0HkKVaPB-SmV631FZmtgT3mIvAXupb2cRgiNidx?from_tab_name=main" title="抖音">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M960 419.82a420.12 420.12 0 0 1-245.54-78.5v357.44A325.1 325.1 0 1 1 434 376.62v179.78a149.24 149.24 0 1 0 104.46 142.36V0h176a242.36 242.36 0 0 0 3.72 44.34A244.36 244.36 0 0 0 826 204.78a242.86 242.86 0 0 0 134 40.28z" p-id="827"></path>
+                        <svg t="1754475688270" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1297" width="200" height="200">
+                            <path d="M960 419.82a420.12 420.12 0 0 1-245.54-78.5v357.44A325.1 325.1 0 1 1 434 376.62v179.78a149.24 149.24 0 1 0 104.46 142.36V0h176a242.36 242.36 0 0 0 3.72 44.34A244.36 244.36 0 0 0 826 204.78a242.86 242.86 0 0 0 134 40.28z" p-id="1298"></path>
                         </svg>
                     </a>
                     <a href="https://github.com/VOX586/" title="GitHub">
@@ -1024,6 +1065,45 @@
     </footer>
 
     <script>
+        // 移动端菜单控制
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger-button');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                this.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                
+                // 切换body滚动
+                if (navLinks.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // 点击导航链接时关闭菜单
+            navLinks.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    hamburger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // 点击外部区域关闭菜单
+            document.addEventListener('click', function(e) {
+                if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
         // 隐私政策浮窗控制
         function showPrivacyPolicy(event) {
             event.preventDefault();
@@ -1108,15 +1188,42 @@
             });
         });
 
-        // 滚动时导航栏效果
-        window.addEventListener('scroll', function() {
+        // 防抖函数
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction() {
+                const context = this;
+                const args = arguments;
+                const later = function() {
+                    timeout = null;
+                    func.apply(context, args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // 处理滚动事件
+        const handleScroll = debounce(function() {
             const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
+            const scrollPosition = window.scrollY;
+            
+            // 使用 requestAnimationFrame 来优化性能
+            requestAnimationFrame(() => {
+                if (scrollPosition > 50) {
+                    if (!header.classList.contains('scrolled')) {
+                        header.classList.add('scrolled');
+                    }
+                } else {
+                    if (header.classList.contains('scrolled')) {
+                        header.classList.remove('scrolled');
+                    }
+                }
+            });
+        }, 10); // 10ms 的防抖时间
+
+        // 添加滚动事件监听
+        window.addEventListener('scroll', handleScroll, { passive: true });
 
         // 卡片动画效果
         function initializeCards() {
@@ -1162,6 +1269,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
